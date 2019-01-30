@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 	char command[BUFFSIZE] = {0};
 	if(strstr(filename,"html"))
 	{
-		sprintf(command, "w3m %s", filename);
+		sprintf(command, "w3m -dump %s", filename);
 		system(command);
 	}
 	else
@@ -138,5 +138,4 @@ int main(int argc, char **argv)
 	}
 	
 	return 0;
-
 }
