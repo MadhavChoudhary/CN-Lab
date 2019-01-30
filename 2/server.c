@@ -83,6 +83,26 @@ void header(int handler, int status)
     send(handler, header, strlen(header), 0);
 }
 
+char *getMimeType(char *type)
+{
+    char buff[BUFFSIZE] = {0};
+    char *line = NULL;
+    size_t len=0;
+    ssize_t read;
+    FILE *fp = fopen("mime_type.txt", "r");
+
+    while((read = getline(&line, &len, fp)) != -1) {
+        if(strstr(line,type))
+            break;
+    }
+
+    line = strstr(line," ");
+    strtok(line,"\n");
+    fclose(fp);
+
+    return line;
+}
+
 //To send content length, host, date&time, type..
 void sendContentHeaders(int handler, char *filename)
 {
@@ -91,12 +111,8 @@ void sendContentHeaders(int handler, char *filename)
     sprintf(header, "Server: Mad Server\r\n");
     sprintf(header+strlen(header), "Connection: close\r\n");
 
-    char *type = strrchr(filename,'.');
-
-    if(!strcmp(type,".html"))
-        sprintf(header+strlen(header), "Content-Type: text/html; charset=iso-8859-1\r\n");
-    else if(!strcmp(type,".jpg") || strcmp(type,".jpeg"))
-        sprintf(header+strlen(header), "Content-Type: image/jpeg\r\n");
+    char *type = getMimeType(strrchr(filename, '.'));
+    sprintf(header+strlen(header), "Content-Type: %s\r\n",type);
 
     FILE *fp;
     long int size=0;
@@ -151,7 +167,7 @@ void resolve(int handler)
     {
         buf = fgetc(fp);
         send(handler, &buf, 1, 0);
-        printf("%c",buf);
+        //printf("%c",buf);
     }
 }
 
