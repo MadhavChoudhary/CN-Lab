@@ -12,7 +12,7 @@
 #define MAX_REQUEST_SIZE 1000
 #define BUFFSIZE 1024
 
-int ret; 			//return value for error handling
+int ret;	//return value for error handling
 
 //First get server information
 struct addrinfo *getServerInfo(char *server, char *port)
@@ -69,7 +69,8 @@ int establishConnection(struct addrinfo *info)
 void sendGET(int sockfd, char *path)
 {
 	char req[MAX_REQUEST_SIZE]={0};
-	sprintf(req, "GET %s HTTP/1.1\r\n\r\n", path);
+	sprintf(req, "GET %s HTTP/1.0\r\n\r\n", path);
+	//printf("request: %s", req);
 	send(sockfd, req, strlen(req), 0);
 }
 
@@ -77,7 +78,6 @@ void sendGET(int sockfd, char *path)
 int main(int argc, char **argv)
 {
 	int sockfd;
-	char buff[BUFFSIZE];
 
 	if(argc!=4)
 	{
@@ -93,25 +93,36 @@ int main(int argc, char **argv)
 		return 3;
 	}
 
+	//send get request
 	sendGET(sockfd, argv[3]);
+
+	int ptr=0;
+	char buf;
+	char buff[BUFFSIZE];
+
+	//receive headers
+	while(recv(sockfd, &buf, 1, 0) > 0){
+
+	    buff[ptr++]=buf;
+	    buff[ptr]='\0';
+
+		if(strstr(buff, "\r\n\r\n")) break;
+
+		printf("%c", buf);
+	}
 
 	char *filename = strrchr(argv[3], '/');
 	filename++;
 	FILE *fp = fopen(filename, "w");
 
-	while(recv(sockfd, buff, BUFFSIZE, 0)>0)
-	{
-		printf("%s",buff);
-		fprintf(fp, "%s", buff);
-		memset(buff, 0, BUFFSIZE);
+	//receive the body
+	while(recv(sockfd, &buf, 1, 0) > 0){
+		fprintf(fp, "%c", buf);
+		printf("%c", buf);
 	}
 
 	fclose(fp);
 	close(sockfd);
-
-	char *command_str[MAX_REQUEST_SIZE] = {0};
-	sprintf(command_str, "lynx -dump %s", filename);
-	command(command_str);
 	
 	return 0;
 
