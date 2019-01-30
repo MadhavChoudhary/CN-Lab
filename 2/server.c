@@ -83,6 +83,7 @@ void header(int handler, int status)
     send(handler, header, strlen(header), 0);
 }
 
+//get mime types
 char *getMimeType(char *type)
 {
     char buff[BUFFSIZE] = {0};
@@ -91,13 +92,16 @@ char *getMimeType(char *type)
     ssize_t read;
     FILE *fp = fopen("mime_type.txt", "r");
 
-    while((read = getline(&line, &len, fp)) != -1) {
+    while((read = getline(&line, &len, fp)) != -1)
+    {
+        line = strtok(line, " ");
         if(strstr(line,type))
+        {
+            line = strtok(NULL,"\n");
             break;
+        }
     }
 
-    line = strstr(line," ");
-    strtok(line,"\n");
     fclose(fp);
 
     return line;
@@ -187,7 +191,7 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    if(listen(sockfd, 10)<0)
+    if(listen(sockfd, 20)<0)
     {
         printf("Error in listening\n");
         return 3;
@@ -196,10 +200,10 @@ int main(int argc, char **argv)
     int handler;
     socklen_t size;
     struct sockaddr_storage client;
+    size = sizeof(client);
 
     while(1)
     {
-        size = sizeof(client);
         handler = accept(sockfd, (struct sockaddr *)&client, &size);
 
         if(handler<0)
