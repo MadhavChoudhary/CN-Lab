@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 
 		if(strstr(buff, "\r\n\r\n")) break;
 
-		printf("%c", buf);
+		//printf("%c", buf);
 	}
 
 	char *filename = strrchr(argv[3], '/');
@@ -118,11 +118,24 @@ int main(int argc, char **argv)
 	//receive the body
 	while(recv(sockfd, &buf, 1, 0) > 0){
 		fprintf(fp, "%c", buf);
-		printf("%c", buf);
+		//printf("%c", buf);
 	}
 
 	fclose(fp);
 	close(sockfd);
+
+	//Pretty-print the content in terminal
+	char command[BUFFSIZE] = {0};
+	if(strstr(filename,"html"))
+	{
+		sprintf(command, "w3m %s", filename);
+		system(command);
+	}
+	else
+	{
+		sprintf(command, "imgcat %s", filename);
+		system(command);
+	}
 	
 	return 0;
 
