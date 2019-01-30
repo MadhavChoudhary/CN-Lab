@@ -55,12 +55,12 @@ int establishConnection(struct addrinfo *info)
 	      continue;
     	}
 
-    	freeaddrinfo(info);
-    	printf("Connection Successful\n");
+
+    	//printf("Connection Successful\n");
     	return sockfd;
 	}
 
-	freeaddrinfo(info);
+
 	printf("Connection Unsucessful\n");
 	return -1;
 }
@@ -72,6 +72,36 @@ void sendGET(int sockfd, char *path)
 	sprintf(req, "GET %s HTTP/1.0\r\n\r\n", path);
 	//printf("request: %s", req);
 	send(sockfd, req, strlen(req), 0);
+}
+
+void getsrc(char *filename, char *addr, char *port, char *path)
+{
+    char command[BUFFSIZE] = {0};
+    char *line = NULL;
+    size_t len=0;
+    ssize_t read;
+    FILE *fp = fopen(filename, "r");
+
+    while((read = getline(&line, &len, fp)) != -1)
+    {
+        if(strstr(line,"src="))
+        {
+            line = strtok(line,"\"");
+            line = strtok(NULL, "\"");
+            // if(strrchr(filename,'/'))
+            // {
+            // 	sprintf(strrchr(filename,'/')+1,"%s",line);
+            // 	sprintf(command,"./client %s %s /%s",addr,port,filename);
+            // }
+            
+            sprintf(command,"./client %s %s /%s",addr,port,line);
+            system(command);
+            //printf("%s\n",command);
+        }
+    }
+
+
+    fclose(fp);
 }
 
 //Main function
@@ -130,11 +160,12 @@ int main(int argc, char **argv)
 	{
 		sprintf(command, "w3m -dump %s", filename);
 		system(command);
+		getsrc(filename,argv[1],argv[2],argv[3]);
 	}
-	else
+	else if(strstr(filename,"jp"))
 	{
 		sprintf(command, "imgcat %s", filename);
-		system(command);
+		system(command);	
 	}
 	
 	return 0;
