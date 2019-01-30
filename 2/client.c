@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 
 		if(strstr(buff, "\r\n\r\n")) break;
 
-		//printf("%c", buf);
+		printf("%c", buf);
 	}
 
 	char *filename = strrchr(argv[3], '/');
@@ -167,6 +167,6 @@ int main(int argc, char **argv)
 		sprintf(command, "imgcat %s", filename);
 		system(command);	
 	}
-	
+
 	return 0;
 }
