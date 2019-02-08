@@ -69,10 +69,22 @@ int establishConnection(struct addrinfo *info)
 void sendGET(int sockfd, char *path)
 {
 	char req[MAX_REQUEST_SIZE]={0};
-	sprintf(req, "GET %s HTTP/1.0\r\n\r\n", path);
+	sprintf(req, "GET %s HTTP/1.1\r\nCookie: 1P_JAR=2019-02-07-09; expires=Sat, 09-Mar-2019 09:03:37 GMT; path=/; domain=.google.com;\r\n\r\n", path);
 	//printf("request: %s", req);
 	send(sockfd, req, strlen(req), 0);
 }
+
+// void sendPOST(int sockfd, char *path)
+// {
+// 	char req[MAX_REQUEST_SIZE]={0};
+// 	char data = "name=madhav&last=tummala";
+// 	sprintf(req, "POST %s HTTP/1.0\r\n",path);
+// 	sprintf(req, "Content-Length: %ld\r\n", strlen(data));
+// 	sprintf(req, "Content-Type: text/plain\r\n\r\n");
+// 	sprintf(req, "%s", data);
+// 	//printf("request: %s", req);
+// 	send(sockfd, req, strlen(req), 0);	
+// }
 
 void getsrc(char *filename, char *addr, char *port, char *path)
 {
@@ -123,9 +135,14 @@ int main(int argc, char **argv)
 		return 3;
 	}
 
-	//send get request
-	sendGET(sockfd, argv[3]);
 
+	// if(strcmp(argv[4],"GET")==0)
+	// 	sendGET(sockfd, argv[3]);
+	// else if(strcmp(argv[4],"POST")==0)
+	// 	sendPOST(sockfd, argv[3]);
+
+	sendGET(sockfd, argv[3]);
+	
 	int ptr=0;
 	char buf;
 	char buff[BUFFSIZE];

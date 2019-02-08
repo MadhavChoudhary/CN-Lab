@@ -142,12 +142,13 @@ void resolve(int handler)
     //receive the request and get the method
     recv(handler, buff, BUFFSIZE, 0);
     method = strtok(buff, " ");
-    if(strcmp(method, "GET") != 0) 
-        return;
-
-    //get the filename
-    filename = strtok(NULL, " ");
-    if (filename[0] == '/') filename++;
+    if(strcmp(method, "GET") == 0){
+        filename = strtok(NULL, " ");
+        if (filename[0] == '/') filename++;
+    }
+    else if(strcmp(method, "POST")==0){
+        filename="post.txt";
+    }
 
     //send status code
     if(access(filename, F_OK)!=0)
