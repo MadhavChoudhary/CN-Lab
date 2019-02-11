@@ -188,6 +188,7 @@ void *login()
 	int addrlen = sizeof(server_addr);
 	char name[BUFFSIZE];
 	char name_backup[BUFFSIZE];
+	char ip[BUFFSIZE];
 
 	client_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -216,14 +217,12 @@ void *login()
 	scanf("%s",name);
 	strcpy(name_backup,name);
 
-    char hostbuffer[256]; 
-    char *IPbuffer; 
-    struct hostent *host_entry; 
-    int hostname; 
+	system("chmod +x showip.sh & ./showip.sh");
 
-    hostname = gethostname(hostbuffer, sizeof(hostbuffer)); 
-    host_entry = gethostbyname(hostbuffer); 
-    IPbuffer = inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
+	FILE *fp;
+	fp=fopen("ip.txt", "r");
+	fscanf(fp,"%s",ip);
+	fclose(fp);
 
 	while(1)
 	{
@@ -233,7 +232,7 @@ void *login()
 			write(client_socket, name, BUFFSIZE);
 
 			memset(&name, 0, sizeof(name));
-			strcpy(name, IPbuffer);
+			strcpy(name, ip);
 			write(client_socket, name, BUFFSIZE);
 
 			memset(&name, 0, sizeof(name));
