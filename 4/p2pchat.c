@@ -165,10 +165,10 @@ void *p2pserver()
 
 		server=true;
 		pthread_create(&read, NULL, 
-								read_client, 
+								read_server, 
 								(void*)&client_socket);
 		pthread_create(&write, NULL, 
-								write_client, 
+								write_server, 
 								(void*)&client_socket);
 
 		pthread_join(read, NULL);
@@ -183,7 +183,6 @@ void *p2pserver()
 
 void *login()
 {
-
 	int client_socket;
 	struct sockaddr_in server_addr;
 	int addrlen = sizeof(server_addr);
@@ -228,32 +227,35 @@ void *login()
 
 	while(1)
 	{
-		clear();
-		write(client_socket, name, BUFFSIZE);
+		if(!server)
+		{
+			clear();
+			write(client_socket, name, BUFFSIZE);
 
-		memset(&name, 0, sizeof(name));
-		strcpy(name, IPbuffer);
-		write(client_socket, name, BUFFSIZE);
+			memset(&name, 0, sizeof(name));
+			strcpy(name, IPbuffer);
+			write(client_socket, name, BUFFSIZE);
 
-		memset(&name, 0, sizeof(name));
-		read(client_socket, name, BUFFSIZE);
+			memset(&name, 0, sizeof(name));
+			read(client_socket, name, BUFFSIZE);
 
-		printf("%s\nConnect with?: ", name);
-		memset(&name, 0, sizeof(name));
-		scanf("%s", name);
+			printf("%s\nConnect with?: ", name);
+			memset(&name, 0, sizeof(name));
+			scanf("%s", name);
 
-		write(client_socket, name, BUFFSIZE);
+			write(client_socket, name, BUFFSIZE);
 
-		if(strcmp(name,"q")==0)
-			break;
-					
-		memset(&name, 0, sizeof(name));
-		read(client_socket, name, BUFFSIZE);
+			if(strcmp(name,"q")==0)
+				break;
+						
+			memset(&name, 0, sizeof(name));
+			read(client_socket, name, BUFFSIZE);
 
-		if(strcmp(name,"busy") && strcmp(name,"invalid") && strlen(name)!=0)
-			p2pclient(name);
+			if(strcmp(name,"busy") && strcmp(name,"invalid") && strlen(name)!=0)
+				p2pclient(name);
 
-		strcpy(name, name_backup);
+			strcpy(name, name_backup);
+		}
 	}
 
 	close(client_socket);
@@ -267,6 +269,8 @@ int main()
 	//attempt to login
 	char ip[BUFFSIZE];
 	char name[BUFFSIZE];
+	server=false;
+	cl=false;
 
 	pthread_t regserver, p2pserv;
 
