@@ -9,11 +9,12 @@
 #include <netdb.h> 				//for hostent
 #include <arpa/inet.h> 			//for inet_ntoa,inet_addr
 
-#define PORT 8080
+#define PORT 8007
 #define PORT_REG 6178
 #define backlog 5
 #define BUFFSIZE 1024
-#define REGSERVER "54.87.133.48"
+#define REGSERVER "18.223.16.181"
+// #define REGSERVER "127.0.0.1"
 #define clear() printf("\033[H\033[J")
 
 int ret;						//for error handling
@@ -121,7 +122,8 @@ void p2pclient(char *ip)
 	pthread_join(read, NULL);
 	pthread_join(write, NULL);
 
-	close(client_socket);	
+	close(client_socket);
+	cl=false;
 }
 
 void *p2pserver()
@@ -134,7 +136,7 @@ void *p2pserver()
 	server_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if(server_socket == 0)
 	{
-		perror("socker failed\n");
+		perror("socket failed\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -173,6 +175,7 @@ void *p2pserver()
 
 		pthread_join(read, NULL);
 		pthread_join(write, NULL);
+		server=false;
 	}
 
 	close(client_socket);
@@ -239,8 +242,10 @@ void *login()
 			read(client_socket, name, BUFFSIZE);
 
 			printf("%s\nConnect with?: ", name);
+
 			memset(&name, 0, sizeof(name));
 			scanf("%s", name);
+
 
 			write(client_socket, name, BUFFSIZE);
 

@@ -1,5 +1,5 @@
 #include <stdio.h>  			//printf, scanf
-#include <unistd.h>				//for read()			
+#include <unistd.h>				//for read()
 #include <sys/socket.h>			//for socket functions
 #include <stdlib.h>       		//EXIT_FAILURE, memset
 #include <string.h>				//strlen()
@@ -29,9 +29,13 @@ void *handle_client(void* client_socket)
 
 	while(1)
 	{
+		memset(&buf, 0, sizeof(buf));
+		memset(&ip, 0, sizeof(ip));
+
 		read(client, ip, BUFFSIZE);
 		read(client, buf, BUFFSIZE);
 
+		printf("name: %s ip: %s\n",ip,buf);
 		ipaddr[ip]=buf;
 		status[ip]="Ready";
 
@@ -41,16 +45,15 @@ void *handle_client(void* client_socket)
 		for(it=ipaddr.begin();it!=ipaddr.end();++it)
 			buffer=buffer+it->first+" : "+status[it->first]+"\n";
 
-		memset(buf, 0, sizeof(buf));
+		memset(&buf, 0, sizeof(buf));
 		strcpy(buf, buffer.c_str());
+
 		write(client, buf, BUFFSIZE);
 
-		memset(buf, 0, sizeof(buf));
+		memset(&buf, 0, sizeof(buf));
 		read(client, buf, BUFFSIZE);
 
-		buffer=string(buf);
-
-		printf("%s\n",buf);
+		buffer=buf;
 
 		if(strcmp(buf,"q")==0){
 			ipaddr.erase(ip);
