@@ -6,6 +6,8 @@
 #include <netinet/in.h>			//for struct sockaddr
 #include <pthread.h>			//for multi threading
 #include <stdbool.h>			//for boolean var
+#include <netdb.h> 				//for hostent
+#include <arpa/inet.h> 			//for inet_ntoa,inet_addr
 /*
 
 int connect(int sockfd, const struct sockaddr *addr,

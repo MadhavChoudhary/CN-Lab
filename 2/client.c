@@ -69,7 +69,7 @@ int establishConnection(struct addrinfo *info)
 void sendGET(int sockfd, char *path)
 {
 	char req[MAX_REQUEST_SIZE]={0};
-	sprintf(req, "GET %s HTTP/1.1\r\nCookie: 1P_JAR=2019-02-07-09; expires=Sat, 09-Mar-2019 09:03:37 GMT; path=/; domain=.google.com;\r\n\r\n", path);
+	sprintf(req, "GET %s HTTP/1.1\r\n\r\n", path);
 	//printf("request: %s", req);
 	send(sockfd, req, strlen(req), 0);
 }
