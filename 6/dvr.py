@@ -16,8 +16,8 @@ def client():
 
         for port in ports:
             print 'Sent to '+str(port)
-            message = pickle.dumps({name:graph[name]})
-            # message = pickle.dumps(graph)
+            # message = pickle.dumps({name:graph[name]})
+            message = pickle.dumps(graph)
             clientSock.sendto(message, (IP,port))
 
         time.sleep(1)
