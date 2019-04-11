@@ -1,12 +1,17 @@
 # Assignment 6
 
+***Note: Sample Images in `Images/` directory***
+
+## Requirements
+python3 (prefered)
+
 ## Selective Repeat ARQ
 
 ### Run
 ```
 python sr.py <num_packets> <window_size>
 ```
-### What's Happenning
+### Working
 1. Both sender and reciever are in the same file, running independantly in different threads.
 2. Senders generates random data, and caculates crc for given num_packets
 3. Sender attempts to send a group of packets of window_size
@@ -22,14 +27,14 @@ python sr.py <num_packets> <window_size>
 
 ### Run
 ```
-python dvr.py <id> <port> <config_file> ex: A 5000 configA.txt
+python dvr.py <id> <port> <config_file> ex: A 5000 config/configA.txt
 ```
 While running the code, wait for 30 seconds for everything to converge and set to equillibruim.  
 
 
-### What's Happenning 
+### Working 
 1. The code is completely dynamic, it checks for links failures, new links, new weights all in real time.
-2. Once in 20 sec, the code checks the config file to check for updated cost values.
+2. Once in 30 sec, the code checks the config file to check for updated cost values.
 3. Run any number of nodes according to the config file (should be strictly correct) and upon receiving messages, the distance will be updated.
 4. The graph weights from individual nodes are send in json format to neighbor nodes and they send to their neighbor nodes and this goes on... until all nodes have the complete graph weights at that time.
 5. After that, bellman ford algorithm is applied on each node on the graph and the distances are printed.

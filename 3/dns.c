@@ -82,7 +82,7 @@ void mad_get_hostbyname(unsigned char *host , int query_type)
     unsigned char buf[65536],*qname,*reader;
     int i , j , stop , s;
     struct sockaddr_in a;
-    struct RES_RECORD answers[20],auth[20],addit[20];
+    struct RES_RECORD answers[20];
     struct sockaddr_in dest;
     struct DNS_HEADER *dns = NULL;
     struct QUESTION *qinfo = NULL;

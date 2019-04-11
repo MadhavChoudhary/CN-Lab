@@ -15,9 +15,9 @@ def client():
             print ('Socket not formed')
 
         for port in ports:
-            print 'Sent to '+str(port)
-            # message = pickle.dumps({name:graph[name]})
-            message = pickle.dumps(graph)
+            # print 'Sent to '+str(port)
+            message = pickle.dumps({name:graph[name]})
+            # message = pickle.dumps(graph)
             clientSock.sendto(message, (IP,port))
 
         time.sleep(1)
@@ -81,7 +81,7 @@ while True:
 
     print timer
 
-    while time.time()<refresh+20:
+    while time.time()<refresh+30:
         sock.settimeout(1)
         # print('\033c')
         bellmanford()

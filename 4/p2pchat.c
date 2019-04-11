@@ -13,8 +13,8 @@
 #define PORT_REG 6178
 #define backlog 5
 #define BUFFSIZE 1024
-#define REGSERVER "18.223.16.181"
-// #define REGSERVER "127.0.0.1"
+// #define REGSERVER "18.223.16.181"
+#define REGSERVER "127.0.0.1"
 #define clear() printf("\033[H\033[J")
 
 int ret;						//for error handling

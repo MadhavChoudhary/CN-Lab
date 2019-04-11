@@ -1,5 +1,7 @@
 ## NS2 Simulator
 
+***Note: Sample Images in `Images/` directory***
+
 ### Instructions
 To generate `.tr` and `.nam` files again (fresh)
 ```
@@ -10,7 +12,11 @@ To use existing `.nam` file (for simulation)
 ns 
 nam test.nam
 ```
-To use the existing `.tr` file (for analysis)
+To use the existing `.tr` file (for faster analysis)
+```
+python analysis.py
+```
+To use the existing `.tr` file (for analysis using awk)
 ```
 chmod +x analysis.sh
 ./analysis.sh

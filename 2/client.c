@@ -69,7 +69,7 @@ int establishConnection(struct addrinfo *info)
 void sendGET(int sockfd, char *path)
 {
 	char req[MAX_REQUEST_SIZE]={0};
-	sprintf(req, "GET %s HTTP/1.1\r\n\r\n", path);
+	sprintf(req, "GET %s HTTP/1.0\r\n\r\n", path);
 	//printf("request: %s", req);
 	send(sockfd, req, strlen(req), 0);
 }
@@ -100,15 +100,15 @@ void getsrc(char *filename, char *addr, char *port, char *path)
         {
             line = strtok(line,"\"");
             line = strtok(NULL, "\"");
-            // if(strrchr(filename,'/'))
-            // {
-            // 	sprintf(strrchr(filename,'/')+1,"%s",line);
-            // 	sprintf(command,"./client %s %s /%s",addr,port,filename);
-            // }
+            if(strrchr(filename,'/'))
+            {
+            	sprintf(strrchr(filename,'/')+1,"%s",line);
+            	sprintf(command,"./client %s %s /%s 2",addr,port,filename);
+            }
             
-            sprintf(command,"./client %s %s /%s",addr,port,line);
+            sprintf(command,"./client %s %s /%s 2",addr,port,line);
             system(command);
-            //printf("%s\n",command);
+            // printf("%s\n",command);
         }
     }
 
@@ -121,11 +121,13 @@ int main(int argc, char **argv)
 {
 	int sockfd;
 
-	if(argc!=4)
+	if(argc!=5)
 	{
-		printf("Usage: <hostname> <port> <path>\n");
+		printf("Usage: <hostname> <port> <path> <mode>\n");
 		return 1;
 	}
+
+	int display = atoi(argv[4]);
 
 	sockfd = establishConnection(getServerInfo(argv[1], argv[2]));
 
@@ -171,18 +173,20 @@ int main(int argc, char **argv)
 	fclose(fp);
 	close(sockfd);
 
+	// printf("Complete\n");
+
 	//Pretty-print the content in terminal
 	char command[BUFFSIZE] = {0};
 	if(strstr(filename,"html"))
 	{
 		sprintf(command, "w3m -dump %s", filename);
-		system(command);
-		getsrc(filename,argv[1],argv[2],argv[3]);
+		if(display>1) system(command);
+		if(display>0)getsrc(filename,argv[1],argv[2],argv[3]);
 	}
 	else if(strstr(filename,"jp"))
 	{
 		sprintf(command, "imgcat %s", filename);
-		system(command);	
+		if(display>1) system(command);	
 	}
 
 	return 0;
