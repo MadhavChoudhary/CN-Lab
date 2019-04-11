@@ -21,7 +21,13 @@ To run chatbox code, in one terminal at `./` ,and other terminal at `../`
 	./server
 	./client
 ```
-each in different terminal windows.
+each in different terminal windows.  
+
+1. Type the chat message and press `ENTER` from client.
+2. Server will chat with everyone (like broadcast).  
+3. Send `f` to get the list of files that can be downloaded from the server.
+4. Select a file from the list and then the file will be downloaded with a nice progress bar to represent the status.
+5. Press `q` to quit.
 
 To clean the executables formed
 ```
