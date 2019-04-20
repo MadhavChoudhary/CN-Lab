@@ -2,6 +2,8 @@
 
 A Multi-Threaded Chat/File Transfer tool from one computer to others on a common Network.
 
+***Note: Sample Images in `Images/` directory***
+
 ## Requirements:
 
 Ubuntu / other Linux-based distros
