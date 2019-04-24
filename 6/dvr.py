@@ -6,71 +6,33 @@ import socket
 
 IP = '127.0.0.1'
 
-def client():
-    time.sleep(1)
-    while True:
-        try:
-            clientSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        except:
-            print ('Socket not formed')
-
-        for port in ports:
-            # print 'Sent to '+str(port)
-            message = pickle.dumps({name:graph[name]})
-            # message = pickle.dumps(graph)
-            clientSock.sendto(message, (IP,port))
-
-        time.sleep(1)
-
-def bellmanford():
-    dis = {}
-    for node in graph:
-        dis[node]=float('inf')
-    dis[name]=0
-
-    for _ in range(len(graph)-1):
-        for u in graph:
-            for v in graph[u]:
-                if(dis[v] >= dis[u]+graph[u][v]):
-                    dis[v] = dis[u]+graph[u][v]
-
-    for i in dis:
-        print ('Distance to %s is %f' % (i, dis[i]))
-
-
 script, name, portno, file = sys.argv
-print (name,portno)
+print (portno, file)
 portno = int(portno)
-graph = {}
-ports = []
-neighbors = []
 
-thread.start_new_thread(client, ())
+table = {}
 
 while True:
     fd = open(file)
     n = int(fd.readline())
 
-    graph[name]={}
+    table = {}
     ports = []
     neighbors = []
     timer = {}
+
+    table[name]=(0,name)
 
     while(n>0):
         line = fd.readline()
         info = line.split()
         neighbors.append(info[0])
         ports.append(int(info[2]))
-        if info[0] not in graph.keys():
-            graph[info[0]]={}
-        graph[name][info[0]] = float(info[1])
-        graph[info[0]][name] = float(info[1])
+        table[info[0]] = (float(info[1]),name)
         n = n - 1
 
-    print graph
-    print neighbors
-
-    # time.sleep(2)
+    # print table
+    # print neighbors
 
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     sock.bind((IP,portno))
@@ -79,45 +41,51 @@ while True:
         timer[neighbor]=time.time()
     refresh = time.time()
 
-    print timer
-
-    while time.time()<refresh+30:
+    while time.time()<refresh+100:
+        print table
         sock.settimeout(1)
-        # print('\033c')
-        bellmanford()
-        # print graph
-        # print timer
-        # for neighbor in neighbors:
-            # print time.time()-timer[neighbor]
+
+        if(time.time()-refresh>5):
+            try:
+                clientSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+            except:
+                print ('Socket not formed')
+
+            for port in ports:
+                # print 'Sent to '+str(port)
+                message = pickle.dumps(table)
+                clientSock.sendto(name+':'+message, (IP,port))           
 
         for neighbor in neighbors:
             if time.time()-timer[neighbor] > 5:
-                graph[name][neighbor]=float('inf')
-                graph[neighbor][name]=float('inf')
-
-        print ('\n')
+                table[neighbor]=(float('inf'),name)
 
         try:
             message,client = sock.recvfrom(2048)
-            message = pickle.loads(message)
+            client = message.split(':')[0];
+            route = pickle.loads(message.split(':')[1])
         except:
-            # print 'No new message'
+            # print 'No new message'          
             continue
 
-        # print 'Recived from'+str(client)
-        # print message
+        print 'Recived from '+str(client)
+        print route
 
-        for key in message:
-            if key not in graph.keys():
-                graph[key]={}
-            for i in message[key]:
-                if i not in graph.keys():
-                    graph[i]={}
-                graph[i][key]=message[key][i]
-                graph[key][i]=message[key][i]
-            timer[key] = time.time()
+        if table[client][0] == float('inf'):
+            table[client] = (route[name][0],name)
 
-        # print ('\n')s
+        for key in route:
+            if key not in table.keys():
+                table[key] = (table[client][0]+route[key][0],client)
+            elif table[key][1] == client:
+                table[key] = (table[client][0]+route[key][0],client)
+            elif table[key][0]>table[client]+route[key]:
+                    table[key]=(table[client][0]+route[key][0],client)
+
+        timer[client] = time.time()           
+
+
+        print ('\n')
         time.sleep(1)
 
     refresh = time.time()
