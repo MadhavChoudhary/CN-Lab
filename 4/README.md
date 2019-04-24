@@ -2,6 +2,8 @@
 
 ***Note: Sample Images in `Images/` directory***
 
+Peer-to-Peer Chat Service ( With Registration Server )
+
 ## Requirements
 bash (for `showip.sh`)
 gcc 

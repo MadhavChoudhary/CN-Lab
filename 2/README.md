@@ -1,6 +1,8 @@
 # Assignment 2
 
 ***Note: Sample Images in `Images/` directory***
+
+A HTTP Web server and Web client implementation in C
  
 ## As Client
 
