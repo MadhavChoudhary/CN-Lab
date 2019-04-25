@@ -3,7 +3,7 @@
 ***Note: Sample Images in `Images/` directory***
 
 ## Requirements
-python3 (prefered)
+python2
 
 ## Selective Repeat ARQ
 
