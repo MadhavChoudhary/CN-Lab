@@ -125,6 +125,7 @@ void sendContentHeaders(int handler, char *filename)
     size = ftell(fp);
 
     sprintf(header+strlen(header), "Content-Length: %ld\r\n\r\n", size);
+    sprintf(header+strlen(header), "Cookie: %ld\r\n\r\n", handler);
 
     printf("%s",header);
 
